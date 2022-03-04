@@ -1,4 +1,3 @@
-import math
 
 def localIndex(index, base):
     if index < (1 << base):
@@ -24,14 +23,13 @@ class LinkedArray:
             i += 1
         for i in range(self.length - len(iterable)):
             self.iterable.append(None)
-        # print(self.iterable)
         next_node = None
         j = 0
         self.i = 0
         for i in range(int(localIndex(len(iterable), base)[0])):
-            self.head = ArrayNode(self.iterable[j: j + 2 ** (base + i)], next_node)
+            self.head = ArrayNode(self.iterable[j: j + base ** (2 + i)], next_node)
             next_node = self.head
-            j += 2 ** (base + i)
+            j += base **(2 + i)
             self.i = i
 
     def __str__(self):
@@ -51,7 +49,7 @@ class LinkedArray:
         while elem2.value is not None:
             if elem2.next_node is None:
                 a = [value]
-                for i in range(2**(self.base+self.i+1) - 1):
+                for i in range(self.base**(2+self.i+1) - 1):
                     a.append(None)
                 self.head = ArrayNode(a, elem1)
                 check = False
@@ -76,11 +74,13 @@ class LinkedArray:
             elem2.value = None
 
     def get(self, index):
+        if index > self.length:
+            return None
         global_index, local_index = 0, 0
         i = 0
         while index - global_index >0:
-            if index - (global_index + 2**(self.base+i)) > 0:
-                global_index += 2**(self.base+i)
+            if index - (global_index + self.base**(2+i)) > 0:
+                global_index += self.base**(2+i)
                 i += 1
             else:
                 break
@@ -97,7 +97,7 @@ class LinkedArray:
     def lengt(self):
         res = 0
         for i in range(self.i):
-            res += 2**(self.base + i)
+            res += self.base**(2 + i)
         elem1 = self.head
         elem2 = elem1.head
         while elem2.value is not None:
@@ -113,7 +113,6 @@ class ArrayNode:
         self.values = values
         self.next_node = next_node
         next_node = None
-        # print(values)
         self.head = Node(values[0], None)
         for elem in reversed(values):
             self.head = Node(elem, next_node)
@@ -127,7 +126,6 @@ class ArrayNode:
             elem = elem.next_node
         return result[:-2]
 
-
 class Node:
     def __init__(self, value, next_node):
         self.value = value
@@ -137,7 +135,7 @@ class Node:
         return str(self.value)
 
 
-a = LinkedArray([1, 2, 3, 4, 5, 6 ,7 ,8 ,9 ,10, 11, 12, 13], 2)
+a = LinkedArray([1, 2, 3, 4, 5 ,6 ,7 ,8 ,9 ,10, 11, 12, 13], 2)
 # print(a)
 # a.append(15)
 # print(a)
